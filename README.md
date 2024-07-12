@@ -5,7 +5,9 @@ These may be:
 - typescript files
 
 
+## Database Usage
 
+[Query Demo](query_demo.md)
 
 [prismrv]:http://github.com/inorikiseki/prismrv
 [prismx]:http://github.com/inorikiseki/prismx
