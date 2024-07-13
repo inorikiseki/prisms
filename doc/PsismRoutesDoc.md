@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS HttpCode;
 
 CREATE TABLE HttpCode
 (
-    code SMALLINT UNIQUE PRIMARY KEY,
+    code       SMALLINT UNIQUE PRIMARY KEY,
     annotation VARCHAR(255) NOT NULL
 );
 
@@ -21,13 +21,14 @@ VALUES (100, 'Continue'),
        (500, 'Internal Server Error'),
        (502, 'Bad Gateway');
 
+Drop TABLE IF EXISTS Routes;
 
 CREATE TABLE Routes
 (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     category       VARCHAR(50)                        NOT NULL DEFAULT 'general',
     path           VARCHAR(255) UNIQUE                NOT NULL,
-    implement      TINYTEXT                           NOT NULL,
+    implement      TINYTEXT,
     protocol       ENUM (
         'http', 'https', 'websocket',
         'ftp','ssh','smtp'
@@ -39,8 +40,8 @@ CREATE TABLE Routes
         'Query',
         'Header',
         'File'
-        )                                             NOT NULL DEFAULT 'none',
-    res_code       SMALLINT                                         DEFAULT 200,
+        )                                             NOT NULL DEFAULT 'None',
+    res_code       SMALLINT                                    DEFAULT 200,
     res_type       ENUM (
         'json','text', 'html', 'css', 'image','audio',
         'csv', 'pdf', 'markdown', 'other'
@@ -53,14 +54,28 @@ CREATE TABLE Routes
     remark         TINYTEXT,
     created_at     TIMESTAMP                                   DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (res_code) REFERENCES HttpCode (code),
-    FOREIGN KEY (category) REFERENCES PrismModule(name)
+    FOREIGN KEY (category) REFERENCES PrismModule (name)
 );
 
 
-CREATE TABLE PrismModule(
-    name VARCHAR(50) UNIQUE PRIMARY KEY,
+CREATE TABLE PrismModule
+(
+    name        VARCHAR(50) UNIQUE PRIMARY KEY,
     description TINYTEXT
 );
+
+ALTER TABLE Routes
+    MODIFY param_type ENUM ('None',
+        'UrlParam',
+        'ReqBodyAsJson', 'ReqBodyAsFormData',
+        'Session',
+        'Query',
+        'Header',
+        'File'
+        ) NOT NULL DEFAULT 'None';
+
+ALTER TABLE Routes
+    Add param_fields VARCHAR(255);
 
 ```
 
@@ -77,21 +92,43 @@ CREATE TABLE PrismModule(
 > Example: `500` Internal Server Error, `502` Bad Gateway
 
 > **Request Types** (req_type)  
-> Common HTTP request methods:  
+> Common HTTP request methods:
 > - GET:    
-> Requests data from a specified resource.  
+    > Requests data from a specified resource.
 > - POST:  
-> Submits data to be processed to a specified resource.  
+    > Submits data to be processed to a specified resource.
 > - PUT:  
-> Updates a current resource with new data.  
+    > Updates a current resource with new data.
 > - DELETE:  
-> Deletes the specified resource.  
+    > Deletes the specified resource.
 
 > Note  
 > To insert block code arrow automatically in IDEA,
 > you can:
 > 1. Select the paragraph
-> 2. Indent it  
-> 3. Add `>` to the first line  
-> 4. Press reformat(`Ctrl`+`Alt`+`Enter`)  
-> 5. Then it adds `>` to each line of the paragraph  
+> 2. Indent it
+> 3. Add `>` to the first line
+> 4. Press reformat(`Ctrl`+`Alt`+`Enter`)
+> 5. Then it adds `>` to each line of the paragraph
+
+```mysql
+SELECT r.category,
+       r.path,
+       r.protocol,
+       r.req_type,
+       r.param_type,
+       r.param_fields,
+       r.remark
+FROM routes as r
+ORDER BY r.category;
+```
+
+| category | path          | protocol | req\_type | param\_type   | param\_fields                               | remark              |
+|:---------|:--------------|:---------|:----------|:--------------|:--------------------------------------------|:--------------------|
+| account  | account       | http     | Get       | Session       | accountId                                   | All User's Own Info |
+| auth     | auth/login    | http     | Post      | ReqBodyAsJson | email, password, verificaion code           | null                |
+| auth     | auth/register | http     | Post      | ReqBodyAsJson | username, email, password, verificaion code | null                |
+| auth     | auth/forget   | http     | Post      | ReqBodyAsJson | email                                       | Forget Password     |
+| auth     | auth/reset    | http     | Post      | Session       | password, new password                      | Reset Password      |
+| auth     | auth/logout   | http     | Post      | Session       |                                             | null                |
+| profile  | profile       | http     | Get       | UrlParam      | username                                    | Public User Info    |
