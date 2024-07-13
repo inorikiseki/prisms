@@ -2,13 +2,7 @@ export interface Role {
     id: number;
     name: string;
 }
-export interface Account {
-    id: number;
-    userId: string;
-    role: number;
-    passwordHash: string;
-    createdAt: Date;
-}
+
 export interface Profile {
     id: number;
     accountId: number;
@@ -19,10 +13,20 @@ export interface Profile {
     address: string;
     telephone: string;
 }
+
+export interface Account {
+    id: number;
+    userId: string;
+    role: number;
+    passwordHash: string;
+    createdAt: Date;
+}
+
 export interface Follow {
     followId: number;
     followerId: number;
 }
+
 export type PostState = 'draft' | 'published' | 'deleted' | 'hide';
 export type PostVisibility = 'selfVisible' | 'followerVisible' | 'friendVisible' | 'visible';
 
@@ -38,6 +42,7 @@ export interface Post {
     publishedAt: Date;
     updatedAt: Date;
 }
+
 export type ArticleState = 'draft' | 'published' | 'deleted' | 'hide';
 export type ArticleVisibility = 'selfVisible' | 'followerVisible' | 'friendVisible' | 'visible';
 
@@ -54,6 +59,7 @@ export interface Article {
     publishedAt: Date;
     updatedAt: Date;
 }
+
 export type TagType = 'user' | 'post' | 'article' | 'channel' | 'postArticle';
 
 export interface Tag {
@@ -62,10 +68,12 @@ export interface Tag {
     name: string;
     createdAt: Date;
 }
+
 export interface TagPost {
     postId: number;
     tagId: number;
 }
+
 export type AttachedType = 'comment' | 'post' | 'message' | 'article';
 export type FileType = 'image' | 'video' | 'pdf';
 
@@ -77,6 +85,7 @@ export interface Attachment {
     filePath: string;
     createdAt: Date;
 }
+
 export type CommentAttachedType = 'post' | 'article';
 export type CommentState = 'draft' | 'sent' | 'deleted';
 
@@ -91,6 +100,7 @@ export interface Comment {
     createdAt: Date;
     updatedAt: Date;
 }
+
 export type ConversationType = 'personal' | 'channel';
 
 export interface Conversation {
@@ -98,6 +108,7 @@ export interface Conversation {
     type: ConversationType;
     createdAt: Date;
 }
+
 export interface Message {
     id: number;
     convId: number;
@@ -106,6 +117,7 @@ export interface Message {
     createdAt: Date;
     deliveredAt: Date;
 }
+
 export type NotificationType = 'info' | 'warn';
 
 export interface Notification {
@@ -118,6 +130,7 @@ export interface Notification {
     createdAt: Date;
     deliveredAt: Date;
 }
+
 export type EntityType = 'post' | 'article' | 'comment' | 'message' | 'attachment';
 
 export interface Collection {
@@ -125,12 +138,14 @@ export interface Collection {
     entityType: EntityType;
     entityId: number;
 }
+
 export interface ViewedReceipt {
     userId: number;
     entityType: string;
     entityId: number;
     viewedAt: Date;
 }
+
 export type LikeOrDislikeEntityType = 'post' | 'article' | 'comment' | 'attachment';
 export type LikeOrDislikeType = 'like' | 'dislike';
 
@@ -141,17 +156,20 @@ export interface LikeOrDislike {
     type: LikeOrDislikeType;
     createdAt: Date;
 }
+
 export interface UserConv {
     userId: number;
     convId: number;
     remark: string;
 }
+
 export interface ChannelInfo {
     id: number;
     convId: number;
     name: string;
     description: string;
 }
+
 export type ChannelMemberRole = 'ordinary' | 'admin' | 'master';
 
 export interface ChannelMember {
@@ -162,6 +180,7 @@ export interface ChannelMember {
     joinedAt: Date;
     quitAt?: Date;
 }
+
 export type PrivacySetting = 'hide' | 'openToPublic' | 'openToFriends';
 
 export interface SettingRecord {
